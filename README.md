@@ -36,14 +36,43 @@ The Figure below represents the input-output flow of this tool.
 
 ![The Py-Vuln-Finder Tool](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/The%20Py-Vuln-Finder%20Tool.svg)
 
-The Figure below exemplifies a list of vulnerability patterns.
+The JSON code below exemplifies a list of vulnerability patterns.
 
-![Example of Vulnerability Patterns](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Example%20of%20Vulnerability%20Patterns.png)
+```
+[
+  {"vulnerability": "SQL injection A",
+  "sources": ["get", "get_object_or_404", "QueryDict", "ContactMailForm", "ChatMessageForm"],
+  "sanitizers": ["mogrify", "escape_string"],
+  "sinks": ["execute"],
+  "implicit": "no"},
 
-Running the tool using as inputs the above vulnerability patterns and the AST corresponding to the slice represented in _Introduction_ would result in the output below.
+  {"vulnerability": "SQL injection B",
+  "sources": ["QueryDict", "ContactMailForm", "ChatMessageForm", "copy", "get_query_string"],
+  "sanitizers": ["mogrify", "escape_string"],
+  "sinks": ["raw", "RawSQL"],
+  "implicit": "yes"},
 
-![Output File Example](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Output%20File%20Example.png)
+  {"vulnerability": "XSS",
+  "sources": ["get", "get_object_or_404", "QueryDict", "ContactMailForm", "ChatMessageForm"],
+  "sanitizers": ["clean", "escape", "flatatt", "render_template", "render", "render_to_response"],
+  "sinks": ["send_mail_jinja", "mark_safe", "Response", "Markup", "send_mail_jinja", "Raw"],
+  "implicit": "no"}
+]
+```
 
+Running the tool using as inputs the above vulnerability patterns and the AST corresponding to the slice represented in _Introduction_ would result in the JSON output below.
+
+```
+[
+  {
+    "vulnerability": "SQL injection A",
+    "source": "request",
+    "sink": "execute",
+    "unsanitized flows": "yes",
+    "sanitized flows": []
+  }
+]
+```
 
 ## Usage
 
