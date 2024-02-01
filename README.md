@@ -9,7 +9,7 @@ A large class of application vulnerabilities originates in programs that enable 
 
 It is often desirable to accept certain illegal information flows, so we do not want to reject such flows entirely. For instance, it is useful to be able to use the inputted user name for building SQL queries. It is thus necessary to differentiate illegal flows that can be exploited, where a vulnerability exists, from those that are inoffensive and can be deemed secure, or endorsed, where there is no vulnerability. One approach is to only accept programs that properly sanitize the user input, and by so restricting the power of the user to acceptable limits, in effect neutralizing the potential vulnerability.
 
-**This project aimed to study how web vulnerabilities can be detected statically by means of taint and input sanitization analysis. We chose as a target web server-side programs encoded in the Python language. There exists a range of Python web frameworks, of which Django is the most widely used. However, this project's implementation is generic to the Python language, without restriction to web applications.**
+_**This project aimed to study how web vulnerabilities can be detected statically by means of taint and input sanitization analysis. We chose as a target web server-side programs encoded in the Python language. There exists a range of Python web frameworks, of which Django is the most widely used. However, this project's implementation is generic to the Python language, without restriction to web applications.**_
 
 ### Example of a Dangerous Information Flow
 
