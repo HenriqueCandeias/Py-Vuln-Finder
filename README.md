@@ -38,7 +38,7 @@ Furthermore, the analysis is fully customizable to the inputted vulnerability pa
 
 _Note: It is assumed that the parsing of the Python slices has been done and that the input files are well-formed._
 
-Obs: Using the terms in the definition of the [Python's AST module](https://greentreesnakes.readthedocs.io/en/latest/nodes.html#meet-the-nodes) the constructs considered for this tool were Literals (Constant), Variables (Name), Expressions (Expr, BinOp, Compare, Call, Attribute), Statements (Assign), Control flow (If and While).
+_Obs: Using the terms in the definition of the [Python's AST module](https://greentreesnakes.readthedocs.io/en/latest/nodes.html#meet-the-nodes), the constructs considered for this tool were Literals (Constant), Variables (Name), Expressions (Expr, BinOp, Compare, Call, Attribute), Statements (Assign), Control flow (If and While)._
 
 ### Vulnerability Patterns (Input)
 
