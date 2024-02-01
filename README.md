@@ -38,6 +38,8 @@ Furthermore, the analysis is fully customizable to the inputted vulnerability pa
 
 _Note: It is assumed that the parsing of the Python slices has been done and that the input files are well-formed._
 
+### Vulnerability Patterns (Input)
+
 The tool searches in the slices for vulnerabilities according to inputted patterns, which specify for a given type of vulnerability its possible sources (a.k.a. entry points), sanitizers, and sinks:
 
 * name of vulnerability (e.g., SQL injection)
@@ -47,6 +49,8 @@ The tool searches in the slices for vulnerabilities according to inputted patter
 * and a flag indicating whether implicit flows are to be considered.
 
 The tool signals potential vulnerabilities and sanitization efforts: If it identifies a possible data flow from an entry point to a sensitive sink (according to the inputted patterns), it reports a potential vulnerability; if the data flow passes through a sanitization function, it still reports the vulnerability but also acknowledges the fact that its sanitization is possibly being addressed.
+
+### Vulnerability Objects (Output)
 
 The output of the program is a file with a JSON list of vulnerability objects. The structure of the objects should include 5 pairs, with the following meaning:
 
@@ -126,3 +130,36 @@ Running the tool using as inputs the above vulnerability patterns and the previo
   }
 ]
 ```
+
+## Critical Analysis and Improvements
+
+Due to the nature of our implementation, mainly in the “While” constructs, we cannot guarantee that all information flows will be tracked precisely, mainly leading to possible false negatives. For example, a “While” construct that contains an illegal information flow that requires more than five recursive calls within itself to be revealed will not work with our approach. We preferred to sacrifice such in-depth precision for a slightly more superficial analysis. Also, our “Attribute” construct implementation is severely lacking, so it should also be considered as a source of such imprecise information flows. It is important to mention that when an argument of a function is tainted the remaining arguments can also become tainted. However, we do not consider that possibility in our tool. Similarly, when a class method or attribute gets tainted, we consider that the integrity state of the remaining methods/attributes of that class remains unchanged.
+
+We also do not analyze the “break” and “continue” statements, so we are almost certain about the possibility of false positives. We also unduly report some implicit flows. For example:
+
+```
+if y:
+  x = 42 # The value of x is always 42 no matter if it enters the if or the else
+else:
+  x = 42 # That way, x should not be considered tainted by the variable y
+```
+
+Regarding the sanitization mechanisms, we do not believe in the presence of either false negatives or false positives. It is not a possibility we fully discard, but throughout our testing and implementation, we did not come across any bugs or problems of the sort.
+
+Although we cannot answer for certain how these vulnerabilities can be exploited, the only possibilities for false negatives that we know of are, as mentioned, running a While construct that requires more than five recursive calls to fully analyze and information flows passing through an “Attribute” construct.
+
+Regarding reporting non-vulnerabilities and how we can avoid them, we would need to fully implement the “break” and “continue” constructs and also better develop the “Attribute” statement. For example, in the snippet “a = b.c” where “c” is a source, we declare both variables “a” and “b” as tainted when only “a” should be considered as such. We also need to, regarding the “x=42” false positive example, better verify if body statements are equal in loops and conditions with implicit flows so that we do not report false vulnerabilities.
+
+Improving the precision of the tool can be done with further testing of possible corner cases mainly regarding implicit flows and complex and nested sanitizer usage. We would probably lose some efficiency with these improvements, since we are checking for more complex and specific vulnerabilities, but one can argue that efficiency is not the main worry, since the main properties that need to be assured for a program of this kind are completeness and robustness.
+
+## Related Work
+
+There are already several other tools that try to solve similar problems to ours. One of those, named [PyT](https://github.com/python-security/pyt), utilizes similar techniques, starting from an AST derived from some source code that is analyzed and deconstructed to reach an output that exposes potential vulnerabilities. While our tool analyses the AST itself to look for vulnerabilities, PyT traverses and converts the syntax trees into a control flow graph by its CFG component.
+
+With that said, there is one tool where we took ideas from which technique to utilize. [Pythia](https://github.com/grnet/pythia), which mainly looks for XSS and CSRF defects and borrows some of the standard ideas from AST analysis, presents the following path traversal algorithm that was extremely useful to us in terms of inspiration to create our own recursive algorithm:
+
+![Pythia Algorithm](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Pythia%20Path%20Traversal%20Algorithm.png)
+
+* [S. Micheelsen and B. Thalmann, "PyT - A Static Analysis Tool for Detecting Security Vulnerabilities in Python Web Applications", Master's Thesis, Aalborg University 2016](https://projekter.aau.dk/projekter/files/239563289/final.pdf)
+* [V. Chibotaru et. al, "Scalable Taint Specification Inference with Big Code", PLDI 2019](https://files.sri.inf.ethz.ch/website/papers/scalable-taint-specification-inference-pldi2019.pdf)
+* [L. Giannopoulos et. al, "Pythia: Identifying Dangerous Data-flows in Django-based Applications", EuroSec 2019](https://dimitro.gr/assets/papers/GDTM19.pdf)
