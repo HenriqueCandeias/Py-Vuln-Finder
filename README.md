@@ -7,9 +7,9 @@
 
 A large class of application vulnerabilities originates in programs that enable user input information to affect the values of certain parameters of security-sensitive functions. In other words, these programs encode a potentially dangerous information flow, in the sense that low integrity -- tainted -- information (user input) may interfere with high integrity parameters of sensitive functions or variables (so-called sensitive sinks). This means that users are given the power to alter the behavior of sensitive functions or variables, and in the worst case may be able to induce the program to perform security violations. For this reason, such flows can be deemed illegal for their potential to encode vulnerabilities.
 
-It is often desirable to accept certain illegal information flows, so we do not want to reject such flows entirely. For instance, it is useful to be able to use the inputted user name for building SQL queries. It is thus necessary to differentiate illegal flows that can be exploited, where a vulnerability exists, from those that are inoffensive and can be deemed secure, or endorsed, where there is no vulnerability. One approach is to only accept programs that properly sanitize the user input, and by so restricting the power of the user to acceptable limits, in effect neutralizing the potential vulnerability.
+It is often desirable to accept certain illegal information flows, so we do not want to reject such flows entirely. For instance, it is useful to be able to use the inputted user name for building SQL queries. It is thus necessary to differentiate illegal flows that can be exploited, where a vulnerability exists, from those that are inoffensive and can be deemed secure, or endorsed, where there is no vulnerability. One approach is to only accept programs that properly sanitize the user input, and by so restrict the power of the user to acceptable limits, in effect neutralizing the potential vulnerability.
 
-_**This project aimed to study how web vulnerabilities can be detected statically by means of taint and input sanitization analysis. We chose as a target web server-side programs encoded in the Python language. There exists a range of Python web frameworks, of which Django is the most widely used. However, this project's implementation is generic to the Python language, without restriction to web applications.**_
+_**This project aimed to study how web vulnerabilities can be detected statically through taint and input sanitization analysis. We chose as a target web server-side programs encoded in the Python language. There exists a range of Python web frameworks, of which Django is the most widely used. However, this project's implementation is generic to the Python language, without restriction to web applications.**_
 
 ### Example of a Dangerous Information Flow
 
@@ -37,6 +37,8 @@ The py-vuln-finder tool analyses Python (version 3.9) code slices represented in
 Furthermore, the analysis is fully customizable to the inputted vulnerability patterns. In addition to the entry points specified in the patterns, by default, any uninstantiated variable that appears in the slice is to be considered as an entry point to all vulnerabilities being considered.
 
 _Note: It is assumed that the parsing of the Python slices has been done and that the input files are well-formed._
+
+Obs: Using the terms in the definition of the [Python's AST module],(https://greentreesnakes.readthedocs.io/en/latest/nodes.html#meet-the-nodes) the constructs considered for this tool were Literals (Constant), Variables (Name), Expressions (Expr, BinOp, Compare, Call, Attribute), Statements (Assign), Control flow (If and While).
 
 ### Vulnerability Patterns (Input)
 
@@ -148,7 +150,7 @@ Regarding the sanitization mechanisms, we do not believe in the presence of eith
 
 Although we cannot answer for certain how these vulnerabilities can be exploited, the only possibilities for false negatives that we know of are, as mentioned, running a While construct that requires more than five recursive calls to fully analyze and information flows passing through an “Attribute” construct.
 
-Regarding reporting non-vulnerabilities and how we can avoid them, we would need to fully implement the “break” and “continue” constructs and also better develop the “Attribute” statement. For example, in the snippet “a = b.c” where “c” is a source, we declare both variables “a” and “b” as tainted when only “a” should be considered as such. We also need to, regarding the “x=42” false positive example, better verify if body statements are equal in loops and conditions with implicit flows so that we do not report false vulnerabilities.
+Regarding reporting non-vulnerabilities and how we can avoid them, we would need to fully implement the “break” and “continue” constructs and also better develop the “Attribute” statement. For example, in the snippet ```a = b.c``` where ```c``` is a source, we declare both variables ```a``` and ```b``` as tainted when only ```a``` should be considered as such. We also need to, regarding the ```x=42``` false positive example, better verify if body statements are equal in loops and conditions with implicit flows so that we do not report false vulnerabilities.
 
 Improving the precision of the tool can be done with further testing of possible corner cases mainly regarding implicit flows and complex and nested sanitizer usage. We would probably lose some efficiency with these improvements, since we are checking for more complex and specific vulnerabilities, but one can argue that efficiency is not the main worry, since the main properties that need to be assured for a program of this kind are completeness and robustness.
 
@@ -159,6 +161,8 @@ There are already several other tools that try to solve similar problems to ours
 With that said, there is one tool where we took ideas from which technique to utilize. [Pythia](https://github.com/grnet/pythia), which mainly looks for XSS and CSRF defects and borrows some of the standard ideas from AST analysis, presents the following path traversal algorithm that was extremely useful to us in terms of inspiration to create our own recursive algorithm:
 
 ![Pythia Algorithm](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Pythia%20Path%20Traversal%20Algorithm.png)
+
+References:
 
 * [S. Micheelsen and B. Thalmann, "PyT - A Static Analysis Tool for Detecting Security Vulnerabilities in Python Web Applications", Master's Thesis, Aalborg University 2016](https://projekter.aau.dk/projekter/files/239563289/final.pdf)
 * [V. Chibotaru et. al, "Scalable Taint Specification Inference with Big Code", PLDI 2019](https://files.sri.inf.ethz.ch/website/papers/scalable-taint-specification-inference-pldi2019.pdf)
