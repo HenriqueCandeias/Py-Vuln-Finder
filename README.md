@@ -18,7 +18,7 @@ q = cursor.execute("SELECT pass FROM users WHERE user='%s'" % uname)
 
 Inspecting this slice it is clear that the program from which the slice was extracted can potentially encode an SQL injection vulnerability. An attacker can inject a malicious username like ```' OR 1 = 1 --```, modifying the structure of the query and obtaining all users' passwords.
 
-The tool aims to search in the slices for vulnerabilities according to inputted patterns, which specify for a given type of vulnerability its possible sources (a.k.a. entry points), sanitizers, and sinks:
+The tool asearches in the slices for vulnerabilities according to inputted patterns, which specify for a given type of vulnerability its possible sources (a.k.a. entry points), sanitizers, and sinks:
 
 * name of vulnerability (e.g., SQL injection)
 * a set of entry points (e.g., request parameter),
@@ -26,7 +26,7 @@ The tool aims to search in the slices for vulnerabilities according to inputted 
 * a set of sensitive sinks (e.g., execute),
 * and a flag indicating whether implicit flows are to be considered.
 
-The tool should signal potential vulnerabilities and sanitization efforts: If it identifies a possible data flow from an entry point to a sensitive sink (according to the inputted patterns), it should report a potential vulnerability; if the data flow passes through a sanitization function, it should still report the vulnerability but also acknowledge the fact that its sanitization is possibly being addressed.
+The tool signals potential vulnerabilities and sanitization efforts: If it identifies a possible data flow from an entry point to a sensitive sink (according to the inputted patterns), it reports a potential vulnerability; if the data flow passes through a sanitization function, it still reports the vulnerability but also acknowledges the fact that its sanitization is possibly being addressed.
 
 ## The Tool
 
