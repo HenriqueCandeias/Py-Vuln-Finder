@@ -30,22 +30,26 @@ The tool should signal potential vulnerabilities and sanitization efforts: If it
 
 ## The Tool
 
-The py-vuln-finder tool analyses Python (version 3.9) code slices represented in the form of an Abstract Syntax Tree (AST), receiving two JSON files as input: one containing the code slices and another containing a list of vulnerability patterns. After the analysis is complete, the tool outputs a JSON file with the list of vulnerability objects found.
-
-It is assumed that the parsing of the Python slices has been done and that the input files are well-formed. The analysis is fully customizable to the inputted vulnerability patterns. In addition to the entry points specified in the patterns, by default, any uninstantiated variable that appears in the slice is to be considered as an entry point to all vulnerabilities being considered.
+The py-vuln-finder tool analyses Python (version 3.9) code slices represented in the form of an Abstract Syntax Tree (AST), receiving two JSON files as input: one containing the code slices and another containing a list of vulnerability patterns. After the analysis is complete, the tool outputs a JSON file with the list of vulnerability objects found. The analysis is fully customizable to the inputted vulnerability patterns. In addition to the entry points specified in the patterns, by default, any uninstantiated variable that appears in the slice is to be considered as an entry point to all vulnerabilities being considered.
+_Note: It is assumed that the parsing of the Python slices has been done and that the input files are well-formed._
+The Figure below represents the input-output flow of this tool.
 
 ![The Py-Vuln-Finder Tool](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/The%20Py-Vuln-Finder%20Tool.svg)
 
+The Figure below exemplifies a list of vulnerability patterns.
+
+![Example of Vulnerability Patterns](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Example%20of%20Vulnerability%20Patterns.png)
+
+Running the tool using as inputs the above vulnerability patterns and the AST corresponding to the slice represented in _Introduction_ would result in the output below.
+
+![Output File Example](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Output%20File%20Example.png)
+
+
 ## Usage
 
-```python py-vuln-finder.py ast_slice.py.json patterns_to_analyse.json```,
+```python py-vuln-finder.py ast_slice.py.json patterns_to_analyse.json```
 
-Where
 * ```ast_slice.py.json``` contains the AST corresponding to the slice to analyze for vulnerabilities and sanitizations;
 * ```patterns_to_analyse.json``` contains the vulnerability patterns to use as a reference.
 
-After running the tool, an output file with a complete report is created. In this case, ```ast_slice.output.json```.
-
-As an example, for a code flow where an entry point ```c``` taints a sensitive sink ```e```, the output would look something like this:
-
-![Output File Example]()
+After running the tool, an output file with a complete report is created. In this example, it would be ```ast_slice.output.json```.
