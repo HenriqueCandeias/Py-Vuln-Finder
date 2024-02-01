@@ -32,13 +32,13 @@ _**Given a set of vulnerability patterns of the form (vulnerability name, a set 
 
 The py-vuln-finder tool analyses Python (version 3.9) code slices represented in the form of an Abstract Syntax Tree (AST), receiving two JSON files as input: one containing the code slices and another containing a list of vulnerability patterns. After the analysis is complete, the tool outputs a JSON file with the list of vulnerability objects found. The Figure below represents the input-output flow of this tool.
 
-![The Py-Vuln-Finder Tool](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/The%20Py-Vuln-Finder%20Tool.svg)
+![The Py-Vuln-Finder Tool](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/README-media/The%20Py-Vuln-Finder%20Tool.svg)
 
 Furthermore, the analysis is fully customizable to the inputted vulnerability patterns. In addition to the entry points specified in the patterns, by default, any uninstantiated variable that appears in the slice is to be considered as an entry point to all vulnerabilities being considered.
 
 _Note: It is assumed that the parsing of the Python slices has been done and that the input files are well-formed._
 
-Obs: Using the terms in the definition of the [Python's AST module],(https://greentreesnakes.readthedocs.io/en/latest/nodes.html#meet-the-nodes) the constructs considered for this tool were Literals (Constant), Variables (Name), Expressions (Expr, BinOp, Compare, Call, Attribute), Statements (Assign), Control flow (If and While).
+Obs: Using the terms in the definition of the [Python's AST module](https://greentreesnakes.readthedocs.io/en/latest/nodes.html#meet-the-nodes) the constructs considered for this tool were Literals (Constant), Variables (Name), Expressions (Expr, BinOp, Compare, Call, Attribute), Statements (Assign), Control flow (If and While).
 
 ### Vulnerability Patterns (Input)
 
@@ -93,7 +93,7 @@ After running the tool, an output file with a complete report is created. In thi
 
 ## Example
 
-The AST corresponding to the Python program exemplified in _Introduction_ is present in the [python_ast_example.json](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/python_ast_example.json) file (it is not displayed here because of its big size).
+The AST corresponding to the Python program exemplified in _Introduction_ is present in the [python_ast_example.json](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/README-media/python_ast_example.json) file (it is not displayed here because of its big size).
 
 The JSON code below exemplifies a list of vulnerability patterns.
 
@@ -160,7 +160,7 @@ There are already several other tools that try to solve similar problems to ours
 
 With that said, there is one tool where we took ideas from which technique to utilize. [Pythia](https://github.com/grnet/pythia), which mainly looks for XSS and CSRF defects and borrows some of the standard ideas from AST analysis, presents the following path traversal algorithm that was extremely useful to us in terms of inspiration to create our own recursive algorithm:
 
-![Pythia Algorithm](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/Pythia%20Path%20Traversal%20Algorithm.png)
+![Pythia Algorithm](https://github.com/HenriqueCandeias/Py-Vuln-Finder/blob/main/README-media/Pythia%20Path%20Traversal%20Algorithm.png)
 
 References:
 
